@@ -1,6 +1,7 @@
 import requests
 import os
 from zipfile import ZipFile
+from tqdm import tqdm
 
 download_uris = [
     "https://divvy-tripdata.s3.amazonaws.com/Divvy_Trips_2018_Q4.zip",
@@ -13,7 +14,7 @@ download_uris = [
 ]
 
 def download_files(basedir):
-    for uri in download_uris:
+    for uri in tqdm(download_uris):
         file_name = uri.split("/")[-1]
         full_path = os.path.join(basedir, file_name)
 
@@ -28,7 +29,7 @@ def download_files(basedir):
         print("Finished downloading all files")
 
 def extract_and_delete_zip(basedir):
-    for folder_name, subfolders, filenames in os.walk(basedir):
+    for folder_name, subfolders, filenames in tqdm(os.walk(basedir)):
         for file in filenames:
             file_path = os.path.join(basedir, file)
             with ZipFile(file_path, 'r') as f:
@@ -47,6 +48,7 @@ def main():
         os.mkdir(basedir)
 
     download_files(basedir)
+    extract_and_delete_zip(basedir)
 
 if __name__ == "__main__":
     main()
